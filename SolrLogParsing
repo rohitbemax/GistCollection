@@ -1,0 +1,39 @@
+1. To grep Qtimes out of Solr Log and sort them based on Qtime
+grep -o "QTime=.*$" /Users/Rohit/Desktop/solr/solr.log | cut -d'=' -f2 | sort -n | uniq -c
+
+2. Find Qtimes within a specified Range:
+# grep -o "QTime=.*$" QTimes_log
+# cat QTimes_log | awk '{if($1==$1+0 && $1<1000)print $1}' | wc -l
+# cat QTimes_log | awk '{if($1==$1+0 && ($1>=1000 && $1<=2000))print $1}' | wc -l
+# cat QTimes_log | awk '{if($1==$1+0 && ($1>=2000 && $1<=3000))print $1}' | wc -l
+# cat QTimes_log | awk '{if($1==$1+0 && ($1>=3000 && $1<=4000))print $1}' | wc -l
+# cat QTimes_log | awk '{if($1==$1+0 && ($1>=4000))print $1}' | wc -l
+
+3. Find fields on which un-inversion is taking place (works before Solr 6):
+$ cat "/Users/Rohit/Documents/0826/solr.2017-08-26-3.log" | grep -v "audit_logs" | grep -i "uninvert" | cut -d ' ' -f 6 | cut -d '_' -f 1 | sort | uniq -c
+Sample Output:
+21 x:default
+80 x:logs
+76 x:system
+1096 x:audit_logs
+
+4. To find the number of documents added in Solr
+cat "/Users/Rohit/Documents/0826/solr.2017-08-26-3.log" | grep "/update" | grep -o '\. (.*adds)' | sed -e 's/adds//g' | sed -e 's/\. (//g' | sed -e 's/)//g' | awk -F: '{total+=$1} END{print total}'
+
+5. To check the QPS in the logs we look for the queries on the /select handle in the Solr logs
+$ cat "/Users/Rohit/Documents/0826/solr.2017-08-26-3.log" | grep -i "/select" | wc -l
+
+6. Verify the number of update/indexing requests on Solr
+$ cat "/Users/Rohit/Documents/0826/solr.2017-08-26-3.log" | grep -i "/update" | wc -l
+113764
+
+7. To extract the number of documents added we use Step 7a and 7b and then add both the numbers:
+a)
+$ cat "/Users/Rohit/Documents/0826/solr.2017-08-26-3.log" | grep "/update" | grep -i "add=\[" | grep -v "adds" | grep -o 'add=\[.*\]' | sed -e 's/add=\[//g' | sed -e 's/]//g' | tr ',' '\n' | wc -l
+147440
+
+b)
+$ cat "/Users/Rohit/Documents/0826/solr.2017-08-26-3.log" | grep "/update" | grep -o '\. (.*adds)' | sed -e 's/adds//g' | sed -e 's/\. (//g' | sed -e 's/)//g' | awk -F: '{total+=$1} END{print total}'
+1074524
+
+Total document indexed during 6 hrs = (147440 + 1074524) = 1221964
