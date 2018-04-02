@@ -1,0 +1,46 @@
+1. Extract User, Sys and Real time from the logs for the concurrent phase:
+egrep 'real=[5-9]' gc_* | grep -i "concurrent" | sed -n -e 's/^.*Times: //p' | sed -e 's/\user=//g' | sed -e 's/\sys=//g' | sed -e 's/\real=//g' | sed -e 's/\,//g' | awk '{print $14 "\t" $15 "\t" $16}'
+
+Similar, but less loaded version:
+egrep 'real=[5-9]' gc_* | grep -i "concurrent" | sed -n -e 's/^.*Times: //p' | sed 's/user=/ /g; s/sys=/ /g; s/real=/ /g'
+
+3. From GC logs for Solr. Amount of stopped time:
+$ grep -o "stopped:.*$ seconds" /Users/Rohit/Desktop/SOLR7/Issue_12_29/logs/solr_gc.log.0.current
+
+4. View the concurrent phases
+a) $ egrep 'real=[5-9]' gc_* | grep -i "concurrent" | wc -l
+45105
+
+Exclude the concurrent phase in GC
+b) $ egrep 'real=[5-9]' gc_* | grep -v "concurrent" | wc -l
+0
+
+5. View the count of Full GC:
+$ cat gc_* | grep -i "Full GC" | egrep 'real=[1-2]' | wc -l
+
+6. Calculate the user+sys time
+c) $ egrep 'real=[5-9]' gc_* | sed -n -e 's/^.*Times: //p' | sed 's/user=//g; s/sys=//g; s/real=//g; s/secs]/ /g; s/,//g' | awk '$3 > $2+$1 {print "real="$3 "\tsys+user=" $2+$1 "\tDelta=" $3-($1+$2)}' | wc -l
+31714
+
+7.
+Print if Real greater than (User+Sys) times
+d) $ egrep 'real=[5-9]' gc_* | sed -n -e 's/^.*Times: //p' | sed 's/user=//g; s/sys=//g; s/real=//g; s/secs]/ /g; s/,//g' | awk '($3-($2+$1)) > 4 {print "real="$3 "\tuser+sys=" $1+$2 "\tDelta=" $3-($1+$2)}' | wc -l 
+7143
+
+Example output:
+real=6.11	user+sys=1.77	Delta=4.34
+real=6.07	user+sys=1.84	Delta=4.23
+real=6.11	user+sys=1.8	Delta=4.31
+
+Real time > user + sys time generally indicates CPU or, I/O heavy contentions.
+
+8. Amount of time threads were stopped (can be used for examinging cases related to SafePoint contention):
+for file in /Users/Rohit/Desktop/snispp0030-gc-logs/*; do grep -o "threads were stopped:.*$" $file | cut -d":" -f2 | cut -d" " -f2 | sort -n | uniq -c; done
+
+grep -o "threads were stopped:.*$" /Users/Rohit/Desktop/solr/solr.log | cut -d'=' -f2 | sort -n | uniq -c
+Output:
+threads were stopped: 0.0074413 seconds, Stopping threads took: 0.0001080 seconds
+
+9. Similarly to sort on the thread pause times:
+a) grep -o "threads were stopped:.*$" /Users/Rohit/Desktop/gc.log.0.current | cut -d":" -f2 | cut -d" " -f2 | sort -n | uniq -c
+b) grep -o "threads were stopped:.*$" /Users/Rohit/Desktop/gc.log.0.current | cut -d":" -f3 | cut -d" " -f2 | sort -n | uniq -c
