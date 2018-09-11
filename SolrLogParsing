@@ -37,3 +37,6 @@ $ cat "/Users/Rohit/Documents/0826/solr.2017-08-26-3.log" | grep "/update" | gre
 1074524
 
 Total document indexed during 6 hrs = (147440 + 1074524) = 1221964
+
+c) Time take for update(s) in Solr logs based on /update handler
+cat /Users/Rohit/Desktop/Solr-data/solr_logs/solr.log.{ ,1,2,3,4,5,6,7,8,9} | grep -i "/update" | grep -i --color "add"  | awk 'NF{ print $NF }' | sort -n | uniq -c
