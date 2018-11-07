@@ -1,0 +1,17 @@
+Solr Delete By Queries:
+
+curl -X POST -H 'Content-type:text/xml'  -d '<delete><query>id:doc1</query></delete>' "http://localhost:8983/solr/gettingstarted/update?commit=true"
+
+curl -X POST -H 'Content-type:text/xml' -d @dbq.xml "http://localhost:8983/api/apollo/solr/gettingstarted/update?commit=true"
+
+Example:
+
+curl -X POST -H 'Content-type:text/xml'  -d '<delete><query>id:doc1</query></delete>' "http://localhost:8983/solr/gettingstarted/update?commit=true"
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+
+<lst name="responseHeader">
+  <int name="status">0</int>
+  <int name="QTime">83</int>
+</lst>
+</response>
