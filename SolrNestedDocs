@@ -1,0 +1,89 @@
+Solr Nested Docs
+
+
+{
+    "id": "1",
+    "title_s": "Solr adds block join support",
+    "content_s": "parentDocument",
+    "comments": [{
+        "id": "2",
+        "content_s": "SolrCloud supports it too!"
+      },
+      {
+        "id": "3",
+        "content_s": "New filter syntax"
+      }
+    ]
+  },
+  {
+    "id": "4",
+    "title_s": "New Lucene and Solr release is out",
+    "content_s": "parentDocument",
+    "_childDocuments_": [
+      {
+        "id": "5",
+        "comments_s": "Lots of new features"
+      }
+    ]
+  }
+
+
+
+  { id : book2, type_s:book, dbLockVersion_l:1,
+  _childDocuments_ : [
+   { id: book2_c1, type_s:review} ,
+   { id: book2_c2, type_s:review},
+   { id: book2_c3, type_s:review}
+ ]}
+
+ http://localhost:8983/solr/gettingstarted/select?fl=id,[child parentFilter=type_s:book]&q=book2
+
+
+ curl http://localhost:8983/solr/gettingstarted/update?commitWithin=3000 -d '
+[
+ {id : book2, type_s:book, title_t : "Snow Crash", author_s : "Neal Stephenson",
+  cat_s:sci-fi, pubyear_i:1992, publisher_s:Bantam, "parent_s":"true",
+  _childDocuments_ : [
+    { id: book2_c1, type_s:review, review_dt:"2015-01-03T14:30:00Z",
+      stars_i:5, author_s:yonik,
+      comment_t:"Ahead of its time... I wonder if it helped inspire The Matrix?"
+    }
+    ,
+    { id: book2_c2, type_s:review, review_dt:"2015-04-10T9:00:00Z",
+      stars_i:2, author_s:dan,
+      comment_t:"A pizza boy for the Mafia franchise? Really?"
+    }
+    ,
+    { id: book2_c3, type_s:review, review_dt:"2015-06-02T00:00:00Z",
+      stars_i:4, author_s:mary,
+      comment_t:"Neal is so creative and detailed! Loved the metaverse!"
+    }
+  ]
+ }
+]'
+
+curl http://localhost:8983/solr/gettingstarted/query -d 'q=cat_s:(fantasy OR sci-fi)&fl=id,[child parentFilter=type_s:book]'
+
+curl http://localhost:8983/solr/gettingstarted/query -d 'q=*:*&fl=id,[child parentFilter=type_s:book]'
+
+
+curl http://localhost:8983/solr/gettingstarted/select?q="{!child of=type_s:book}id:book2"
+
+
+HOST:8983/solr/sg_test_nested2/select?fl=id,[child parentFilter=type_s:book]
+
+http://localhost:8983/solr/gettingstarted/select?fl=id,[child parentFilter=type_s:book]
+
+
+{!child of='parent_s:[* TO *]’}id:"book2"}
+
+q={!child of=isParent:true}album:imagine
+
+curl -X POST -H 'Content-type:text/xml'  -d '<delete><query>{!child of=isParent:true}album:imagine</query></delete>' "http://localhost:8983/solr/gettingstarted/update?commit=true"
+
+{!child of='parent_s:[* TO *]'}id:"book2"
+curl -X POST -H 'Content-type:text/xml'  -d '<delete><query>{!child of='parent_s:*'}id:"book2"</query></delete>' "http://localhost:8983/solr/gettingstarted/update?commit=true"
+
+curl -X POST -H 'Content-type:text/xml'  -d '<delete><query>*</query></delete>' "http://localhost:8983/solr/gettingstarted/update?commit=true"
+
+curl -X POST -H 'Content-type:text/xml'  -d '<delete><query>_root_:book2</query></delete>' "http://localhost:8983/solr/gettingstarted/update?commit=true"
