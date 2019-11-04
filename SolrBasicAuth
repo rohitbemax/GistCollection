@@ -1,0 +1,28 @@
+bin/solr start -c -e cloud -noprompt
+
+server/scripts/cloud-scripts/zkcli.sh -zkhost localhost:9983 -cmd put /security.json '{authentication : { class : solr.BasicAuthPlugin, credentials : {solr : "IV0EHq1OnNrj6gvRCwvFwTrZ1+z1oBbnQdiVC3otuq0= Ndd7LKvVBAaZIF0QAVi1ekCfAJXr1GGfLtRUXhgrF8c="} }, authorization : { class : solr.RuleBasedAuthorizationPlugin }}'
+
+curl  http://localhost:8983/solr/admin/authentication -H 'Content-type:application/json' -d '{
+set-user : {scott : abc1234}}'
+
+curl  http://localhost:8983/solr/admin/authorization -H 'Content-type:application/json' -d '{
+set-user-role : {scott : admin},
+set-user-role: {solr: dev}}'
+
+curl  http://localhost:8983/solr/admin/authorization -H 'Content-type:application/json' -d '{
+set-permission : {name : security-edit , role: admin}}'
+
+#The following will fail because the credentials are not sent
+curl http://localhost:8983/solr/admin/authorization -H 'Content-type:application/json' -d '{ 
+set-permission : {name : collection-admin-edit, role : admin}}'
+
+#Trying the same again with proper credentials, this will succeed
+curl --user scott:abc1234 http://localhost:8983/solr/admin/authorization -H 'Content-type:application/json' -d '{ 
+set-permission : {name : collection-admin-edit, role : admin}}'
+
+#The request to this would not prompt for user credentials http://localhost:8983/solr/gettingstarted/select?q=*:*
+
+curl --user scott:abc1234 http://localhost:8983/solr/admin/authorization -H 'Content-type:application/json' -d '{ 
+set-permission : {name : read, role : dev}}'
+
+#The request to this will prompt for user credentials http://localhost:8983/solr/gettingstarted/select?q=*:*
