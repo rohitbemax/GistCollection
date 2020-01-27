@@ -1,0 +1,4 @@
+<int name="socketTimeout">${socketTimeout:600000}</int>
+<int name="connTimeout">${connTimeout:600000}</int>
+<int name="distribUpdateSoTimeout">${distribUpdateSoTimeout:600000}</int>
+ <int name="distribUpdateConnTimeout">${distribUpdateConnTimeout:600000}</int>
