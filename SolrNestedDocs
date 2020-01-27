@@ -193,3 +193,21 @@ curl http://localhost:8983/solr/gettingstarted/update?commitWithin=3000 -d '
 [{id : doc1_c1, _childDocuments_ : [{ id: doc1},{ id: doc1_c2}]}]'
 
 curl -X POST -H 'Content-type:text/xml'  -d '<delete><query>_root_:book1</query></delete>' "http://localhost:8983/solr/gettingstarted/update?commit=true"
+
+ curl http://localhost:8983/solr/gettingstarted/update?commitWithin=3000 -d '
+[
+{id : book2, type_s:book, title_t : "Solr in Action", author_s : "Eric Hatcher",
+cat_s:fantasy, pubyear_i:2010, publisher_s:Tor,
+_childDocuments_ : [
+{ id: book2_c1, type_s:review, review_dt:"2015-01-03T14:30:00Z",
+stars_i:5, author_s:yonik,
+comment_t:"A great solr book but very old"
+}
+,
+{ id: book2_c2, type_s:review, review_dt:"2014-03-15T12:00:00Z",
+stars_i:3, author_s:rahul,
+comment_t:"This book was too long."
+}
+]
+}
+]'
