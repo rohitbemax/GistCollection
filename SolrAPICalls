@@ -15,3 +15,7 @@ http://localhost:8984/solr/test_shard1_replica_n1/replication?command=fetchindex
 
 Get a list of files to copy
 http://localhost:8984/solr/test_shard1_replica_n1/replication?generation=4&tlogFiles=false&wt=xml&command=filelist
+
+Fusion API timeouts
+curl -u admin:password123 -X POST -H "Content-type:application/json" -d '70000' "http://localhost:8764/api/apollo/configurations/com.lucidworks.httpclient.readTimeoutMillis"
+curl -u admin:password123 -X POST -H "Content-type:application/json" -d '360' "http://localhost:8764/api/apollo/configurations/com.apollo.statup.timeout"
