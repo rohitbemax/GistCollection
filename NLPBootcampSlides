@@ -1,0 +1,31 @@
+NLP Bootcamp:
+https://github.com/brmson/dataset-sts
+
+Slides:
+https://www.slideshare.net/anujgupta5095/nlp-bootcamp-2018
+
+Makring a Solr Query:
+
+private static final SolrQuery solrQuery = new SolrQuery("*:*");
+  protected volatile ResponseParser parser;
+  protected volatile RequestWriter requestWriter;
+
+  protected Set<String> queryParams = new HashSet<>();
+
+  static {
+    solrQuery.setRows(0);
+    /**
+     * Default sort (if we don't supply a sort) is by score and since
+     * we request 0 rows any sorting and scoring is not necessary.
+     * SolrQuery.DOCID schema-independently specifies a non-scoring sort.
+     * <code>_docid_ asc</code> sort is efficient,
+     * <code>_docid_ desc</code> sort is not, so choose ascending DOCID sort.
+     */
+    solrQuery.setSort(SolrQuery.DOCID, SolrQuery.ORDER.asc);
+    // not a top-level request, we are interested only in the server being sent to i.e. it need not distribute our request to further servers
+    solrQuery.setDistrib(false);
+  }
+
+
+
+https://issues.apache.org/jira/browse/SOLR-13486
