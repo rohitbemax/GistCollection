@@ -1,3 +1,6 @@
+Parsing Jetty Request logs:
+cat /Users/rohit/Downloads/searchblue-prod-live-solr-3h2q/jetty-2019_11_30.request.log | grep -i "product" | awk 'NF{ print $NF }' | awk '{if($1>=500)print $1}' | wc -l
+
 1. To grep Qtimes out of Solr Log and sort them based on Qtime
 grep -o "QTime=.*$" /Users/Rohit/Desktop/solr/solr.log | cut -d'=' -f2 | sort -n | uniq -c
 
