@@ -1,0 +1,23 @@
+## names of the collections
+declare -a collnames=("gettingstarted" "test")
+
+## now loop through the above list of collections 1 at time and dump the configurations
+for i in "${collnames[@]}"
+do
+   echo "$i"
+   mkdir -p $i/conf
+   ./zkcli.sh -zkhost localhost:9983 -cmd downconfig -confdir ./$i/conf -confname $i
+done
+
+
+
+## names of the collections
+declare -a collnames=("gettingstarted" "test")
+
+## now loop through the above list of collections 1 at time and upload to the ZK /comfigs node the configuration
+for i in "${collnames[@]}"
+do
+   echo "$i"
+   mkdir -p $i/conf
+   ./zkcli.sh -zkhost localhost:9983 -cmd upconfig -confdir ./$i/conf -confname $i
+done
