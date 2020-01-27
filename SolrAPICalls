@@ -1,0 +1,17 @@
+/admin/collections?action=FORCELEADER&collection=<collectionName>&shard=<shardName> 
+http://localhost:8983/solr/admin/collections?action=ADDROLE&role=overseer&node=192.167.1.2:8983_solr 
+
+
+FetchIndex:
+------------
+http:/localhost:18983/solr/Test_shard1_replica_n1/replication?action=fecthIndex&masterUrl=http://localhost:8983/solr/gettingstarted_shard1_replica_n1
+
+FetchIndex Command
+http://localhost:18983/solr/Test_shard1_replica_n1/replication?command=fetchindex
+http:/localhost:18983/solr/Test_shard1_replica_n1/replication?action=fecthIndex&masterUrl=http://localhost:8983/solr/gettingstarted_shard1_replica_n1
+
+Copying the index using replication handler
+http://localhost:8984/solr/test_shard1_replica_n1/replication?command=fetchindex&masterUrl=http://localhost:8985/solr/test_shard1_replica_n1
+
+Get a list of files to copy
+http://localhost:8984/solr/test_shard1_replica_n1/replication?generation=4&tlogFiles=false&wt=xml&command=filelist
