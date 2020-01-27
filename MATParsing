@@ -1,0 +1,6 @@
+Using Eclipse MAT to parse the heap dump to generate the reports
+
+./ParseHeapDump.sh ../rohit/Documents/jvm.hprof org.eclipse.mat.api:suspects
+org.eclipse.mat.api:suspects 
+org.eclipse.mat.api:overview
+org.eclipse.mat.api:top_components
