@@ -1,0 +1,23 @@
+Database Per Service Pattern - as its name implies, each microservice has its own dedicated database. Not an easy pattern to implement as there’s lots of potential drawbacks and overhead in architecture development. Loose coupling and scaling are pluses.
+Single Database Pattern - microservices share one DB - a bit more forgiving approach than 1. The downside is coordination of efforts and cross-dependencies, which goes against the very philosophy of microservices.
+Saga Pipeline Pattern - a sequential pipeline of transactions that takes place with microservice “commit” events.
+API Composition Pattern - used for implementing complex queries in a microservices architecture.
+Command Query Responsibility Segregation Pattern - addresses the challenge of querying multiple microservices by defining a special database view designed to support such query.
+Event sourcing Pattern addresses the problem of maintaining data consistency across microservices (an alternative to this would be another pattern called “Transaction Log Trail”)
+
+Network Tweaks
+
+On the Linux Server Side: The net.core.somaxconn limits the maximum number of requests queued to a listen socket. If you are sure of your server application's capability, bump it up from default 128 to something like 128 to 1024. Now you can take advantage of this increase by modifying the listen backlog variable in your application's listen call, to an equal or higher integer.
+sysctl net.core.somaxconn=1024
+
+Similarly,
+There are other parameters on the OS and Network Card stack driver level which we can tweak to increase the connection
+Example:
+txqueuelen parameter of your ethernet cards also have a role to play. Default values are 1000, so bump them up to 5000 or even more if your system can handle it.
+
+ifconfig eth0 txqueuelen 5000
+echo "/sbin/ifconfig eth0 txqueuelen 5000" >> /etc/rc.local
+Similarly bump up the values for net.core.netdev_max_backlog and net.ipv4.tcp_max_syn_backlog. Their default values are 1000 and 1024 respectively.
+
+sysctl net.core.netdev_max_backlog=2000
+sysctl net.ipv4.tcp_max_syn_backlog=2048
