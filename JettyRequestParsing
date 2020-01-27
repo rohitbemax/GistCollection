@@ -1,0 +1,6 @@
+cat "/Users/rohit/Downloads/searchblue-prod-live-solr-0wq5/jetty-2019_11_30.request.log" | grep -i "product" | awk '{print $1, $2, $3, $4, $5, $NF}'  | tr " " "-" | sort -n -t '-' -k8
+
+cat /Users/rohit/Downloads/searchblue-prod-live-solr-3h2q/jetty-2019_11_30.request.log | grep -i "product" | awk 'NF{ print $NF }' | awk '{if($1>=500)print $1}' | wc -l
+cat /Users/rohit/Downloads/searchblue-prod-live-solr-0wq5/jetty-2019_11_30.request.log | grep -i "product" | awk 'NF{ print $NF }' | awk '{if($1>=500)print $1}' | wc -l
+
+curl -u admin:password123 -X POST -H "Content-type:application/json" -d '360' "http://localhost:8764/api/apollo/configurations/com.apollo.statup.timeout"
