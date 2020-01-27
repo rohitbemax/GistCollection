@@ -3,15 +3,12 @@
 <int name="distribUpdateSoTimeout">${distribUpdateSoTimeout:600000}</int>
  <int name="distribUpdateConnTimeout">${distribUpdateConnTimeout:600000}</int>
 
- /admin/collections?action=FORCELEADER&collection=<collectionName>&shard=<shardName> 
- http://localhost:8983/solr/admin/collections?action=ADDROLE&role=overseer&node=192.167.1.2:8983_solr 
-
+/admin/collections?action=FORCELEADER&collection=<collectionName>&shard=<shardName> 
+http://localhost:8983/solr/admin/collections?action=ADDROLE&role=overseer&node=192.167.1.2:8983_solr 
 
 FetchIndex:
 ------------
 http:/localhost:18983/solr/Test_shard1_replica_n1/replication?action=fecthIndex&masterUrl=http://localhost:8983/solr/gettingstarted_shard1_replica_n1
-
-
 
 http://localhost:18983/solr/Test_shard1_replica_n1/replication?command=fetchindex
 http:/localhost:18983/solr/Test_shard1_replica_n1/replication?action=fecthIndex&masterUrl=http://localhost:8983/solr/gettingstarted_shard1_replica_n1
@@ -21,3 +18,6 @@ http://localhost:8984/solr/test_shard1_replica_n1/replication?command=fetchindex
 
 Get a list of files to copy
 http://localhost:8984/solr/test_shard1_replica_n1/replication?generation=4&tlogFiles=false&wt=xml&command=filelist
+
+Child Documents
+curl http://localhost:8983/solr/gettingstarted/update?commitWithin=3000 -d '[{id : rs, _childDocuments_ : [{ id: rs_c1},{ id: rs_c2}]}]'
