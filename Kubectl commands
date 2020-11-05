@@ -1,0 +1,33 @@
+# GistCollection
+
+1. How to list all the pods for a namespace
+General syntax:
+#kubectl get pods -n <namespace>
+#kubectl get pods -n lucidworks-geetish-sch-15
+
+2. Command to port-forward:
+
+General syntax:
+#kubectl port-forward <name-of-pod> -n <namespace> service_port_on_pod:local_port
+#kubectl port-forward lucidworks-geetish-sch-15-api-gateway-84484f5777-qbdms -n lucidworks-geetish-sch-15 6764:6764
+
+3. Swagger payload to create a post request
+Payload to create a Fusion cluster:
+{
+  "description": "geetish-sch-autoscaling",
+  "enableBackups": false,
+  "id": "geetish-sch-8",
+  "maintenanceTimeFrame": "MON 07:00",
+  "services": {
+    "SolrAnalyticsWorkloadService": {
+      "autoscaling": {
+        "enabled": false
+        ]
+      },
+      "enabled": true,
+      "nodeCount": 3,
+      "nodeType": "standard.small",
+      "storageSizeGB": 20
+    }
+  }
+}
